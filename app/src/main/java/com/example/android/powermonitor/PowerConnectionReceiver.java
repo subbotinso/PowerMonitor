@@ -3,6 +3,7 @@ package com.example.android.powermonitor;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.BatteryManager;
 import android.widget.TextView;
 
@@ -27,9 +28,17 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
         boolean usbCharge = chargePlug == BATTERY_PLUGGED_USB;
         boolean acCharge = chargePlug == BATTERY_PLUGGED_AC;
 
+        IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        Intent batteryStatus = context.registerReceiver(null, ifilter);
+        int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+        int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+
+        float batteryPct = (level / (float)scale) * 100;
+
+
         boolean powerConnected = intent.getAction().toString().equals("android.intent.action.ACTION_POWER_CONNECTED");
-        if (powerConnected) MainActivity.setStatusText(" Power connected");
-         else MainActivity.setStatusText(" Power disconnected");
+        if (powerConnected) MainActivity.setStatusText(" Power connected. Battery level: "+(int)batteryPct+" %");
+         else MainActivity.setStatusText(" Power disconnected. Battery level: "+(int)batteryPct+" %");
 
     }
 }
