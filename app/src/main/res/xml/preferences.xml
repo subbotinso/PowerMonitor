@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <CheckBoxPreference
+        android:key="pref_send_sms"
+        android:title="Send SMS"
+        android:summary="send_sms_summary_string"
+        android:defaultValue="true" />
+</PreferenceScreen>
