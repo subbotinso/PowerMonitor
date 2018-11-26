@@ -1,11 +1,17 @@
 package com.example.android.powermonitor;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.BatteryManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.telephony.SmsManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import static android.os.BatteryManager.BATTERY_PLUGGED_AC;
 import static android.os.BatteryManager.BATTERY_PLUGGED_USB;
@@ -15,8 +21,16 @@ import static android.os.BatteryManager.BATTERY_PLUGGED_USB;
  */
 
 public class PowerConnectionReceiver extends BroadcastReceiver {
+
+    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS =0;
+    private Context myContext;
+    private SmsManager smsManager = SmsManager.getDefault();
+
     @Override
     public void onReceive(Context context, Intent intent) {
+
+        myContext = context;
+
         int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
         boolean isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
                 status == BatteryManager.BATTERY_STATUS_FULL;
@@ -35,10 +49,19 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
 
         float batteryPct = (level / (float)scale) * 100;
 
-
         boolean powerConnected = intent.getAction().toString().equals("android.intent.action.ACTION_POWER_CONNECTED");
-        if (powerConnected) MainActivity.setStatusText(" Power connected. Battery level: "+(int)batteryPct+" %");
-         else MainActivity.setStatusText(" Power disconnected. Battery level: "+(int)batteryPct+" %");
+        if (powerConnected) {
+
+            MainActivity.setStatusText(" Power connected. Battery level: "+(int)batteryPct+" %");
+            // здесь надо будет добавить проверку длинны результирующего SMS сообщения и, при необходимости, процедуру разбиения сообщения на несколько SMS
+            if (MainActivity.getSendSMS()) smsManager.sendTextMessage(MainActivity.getSmsAddress(), null, MainActivity.getMyName()+" Power connected. Battery level: "+(int)batteryPct+" %", null, null);
+        }
+         else {
+             MainActivity.setStatusText(" Power disconnected. Battery level: "+(int)batteryPct+" %");
+            // здесь надо будет добавить проверку длинны результирующего SMS сообщения и, при необходимости, процедуру разбиения сообщения на несколько SMS
+             if (MainActivity.getSendSMS()) smsManager.sendTextMessage(MainActivity.getSmsAddress(), null, MainActivity.getMyName()+" Power disconnected. Battery level: "+(int)batteryPct+" %", null, null);
+        }
 
     }
+
 }

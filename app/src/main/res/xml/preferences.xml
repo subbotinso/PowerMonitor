@@ -1,8 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference
+        android:key="monitor_name"
+        android:title="Power Monitor Name:"
+        android:summary="set description, address, etc..."
+        />
     <CheckBoxPreference
         android:key="pref_send_sms"
         android:title="Send SMS"
-        android:summary="send_sms_summary_string"
-        android:defaultValue="true" />
+        android:defaultValue="false" />
+        <!--android:summary="send sms_summary_string" -->
+    <EditTextPreference
+        android:key="sms_address"
+        android:inputType="phone"
+        android:dependency="pref_send_sms"
+        android:title="Send SMS to:"
+        />
+    <CheckBoxPreference
+        android:key="pref_send_email"
+        android:title="Send E-mail"
+        android:summary="send sms_summary_string"
+        android:defaultValue="false" />
+    <EditTextPreference
+        android:key="email_address"
+        android:dependency="pref_send_email"
+        android:title="Send E-mail to:"
+        />
+    <EditTextPreference
+        android:key="message_delay"
+        android:title="Delay before send first message"
+        android:summary="delay in minutes"
+        android:numeric="integer"
+        android:defaultValue="0"
+        />
+    <EditTextPreference
+        android:key="message_delay"
+        android:title="Delay before send repeated message"
+        android:summary="delay in minutes"
+        android:numeric="integer"
+        android:defaultValue="60"
+        />
 </PreferenceScreen>
